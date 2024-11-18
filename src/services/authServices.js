@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import db from "../config/connect.js";
 
 const userExists = async (email) => {
@@ -32,6 +33,17 @@ const registerUser = async (email, password) => {
     });
 
     console.log("Zakończono");
+
+    const token = jwt.sign(
+        {
+            id: userId,
+            email: email
+        },
+            process.env.secretKey,
+        {
+            expiresIn: process.env.tokenExpiration
+        }
+    )
     return {
         success: true,
         message: "Rejestracja zakończona sukcesem",
@@ -41,14 +53,7 @@ const registerUser = async (email, password) => {
     };
 };
 
-const loginUser = async (email, password) => {
-    const userExist = await userExists(email);
-    if (!userExist) {
-        return {
-            success: false,
-            error: "Błąd"
-        }
-    }
+const loginUser = async (email, submittedPassword) => {
     let savedPassword, userId;
 
     const rows = await new Promise((resolve, reject) => {
@@ -61,19 +66,42 @@ const loginUser = async (email, password) => {
     });
 
     if (rows.length === 0) {
-        throw new Error("Nie znaleziono użytkownika");
+        let saltRounds = parseInt(process.env.saltRounds);
+
+        bcrypt.hashSync('fakePassword', saltRounds);
+
+        throw new Error("Błędny login lub hasło");
     }
 
     savedPassword = rows[0].password;
     userId = rows[0].id;
-    return {
-        success: true,
-        message: "Zalogowano pomyślnie",
-        data: {
-            id: userId,
-            email: email
-        }
-    };
+
+    const passwordDidMatch = await bcrypt.compare(submittedPassword, savedPassword);
+    if (passwordDidMatch) {
+        const token = jwt.sign(
+            {
+                id: userId,
+                email: email
+            },
+            process.env.secretKey,
+            {
+                expiresIn: process.env.tokenExpiration
+            }
+        );
+
+        return {
+            success: true,
+            message: "Zalogowano pomyślnie",
+            data: {
+                id: userId,
+                email: email,
+                token
+            }
+        };
+    }
+    else {
+        throw new Error("Błędny email lub hasło");
+    }
 };
 
 const authController = { registerUser, loginUser };
