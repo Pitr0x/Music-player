@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="main-auth-container">
+        <div id="main-register-screen" class="auth-container">
+            <div class="single-field">
+                <label for="email-register">Email:</label>
+                <input type="text" name="email-register" class="email-register">
+            </div>
+
+            <div class="single-field">
+                <label for="password-register">Hasło:</label>
+                <input type="password" name="password-register" class="password-register">
+            </div>
+            <div class="auth-submit">
+                <input type="button" value="Zarejestruj" id="register-button">
+            </div>
+        </div>
+        <div id="main-login-screen" class="auth-container">
+            <div class="single-field">
+                <label for="email-login">Email:</label>
+                <input type="text" name="email-login" class="email-login">
+            </div>
+
+            <div class="single-field">
+                <label for="password-login">Hasło:</label>
+                <input type="password" name="password-login" class="password-login">
+            </div>
+
+            <div class="auth-submit">
+                <input type="button" value="Zaloguj" id="login-button">
+            </div>
+        </div>
+    </div>
+    <script src="authFetches.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,42 @@
+#main-auth-container {
+    margin-top: 10em;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.4em;
+    display: flex;
+    justify-content: space-around;
+}
+
+.auth-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.single-field {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+input[type="text"], input[type="password"] {
+    padding: 0.7em;
+    border-radius: 20px;
+    border: 2px solid
+}
+
+input[type="button"] {
+    font-size: 0.7em;
+    cursor: pointer;
+    padding: 1em 2em 1em 2em;
+}
+
+.auth-submit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+label {
+    display: inline;
+    width: 100%;
+}
