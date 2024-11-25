@@ -22,28 +22,18 @@ const registerUser = async (email, password) => {
     let saltRounds = parseInt(process.env.saltRounds);
     let passHash = await bcrypt.hash(password, saltRounds);
 
-    await new Promise((resolve, reject) => {
-        db.run(`INSERT INTO users (email, password) VALUES (?, ?)`, [email, passHash], (err) => {
+    const userId = await new Promise((resolve, reject) => {
+        db.run(`INSERT INTO users (email, password) VALUES (?, ?)`, [email, passHash], function (err) {
             if (err) {
                 return reject(err);
             }
 
-            resolve();
+            resolve(this.lastID);
         });
     });
 
-    console.log("Zakończono");
 
-    const token = jwt.sign(
-        {
-            id: userId,
-            email: email
-        },
-            process.env.secretKey,
-        {
-            expiresIn: process.env.tokenExpiration
-        }
-    )
+    console.log("Zakończono");
     return {
         success: true,
         message: "Rejestracja zakończona sukcesem",

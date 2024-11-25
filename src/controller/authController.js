@@ -7,6 +7,7 @@ const validateEmail = (email) => {
 
 async function register(req, res) {
     const { email, password } = req.body;
+    console.log(email, password)
 
     try {
         if (!email || !password) {
@@ -24,7 +25,10 @@ async function register(req, res) {
         console.log(err.message);
         res.status(400).json({
             success: false,
-            error: err.message
+            error: {
+                status: 400,
+                message: err.message
+            }
         });
     }
 }
@@ -41,13 +45,24 @@ async function login(req, res) {
             throw new Error("Nieprawidłowy adres email.");
         }
         const result = await authServices.loginUser(email, password);
+
+        res.cookie('authToken', result.data.token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'Strict',
+            maxAge: 3600000
+        });
+
         res.status(201).json(result);
     }
     catch (err) {
         console.log(err.message);
         res.status(400).json({
             success: false,
-            error: err.message
+            error: {
+                status: 400,
+                message: err.message
+            }
         });
     }
 }
